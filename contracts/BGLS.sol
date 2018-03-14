@@ -83,23 +83,23 @@ contract BGLS {
 
 
   uint256 prime = 21888242871839275222246405745257275088696311157297823662689037894645226208583;
-  uint256 pminus = 21888242871839275222246405745257275088696311157297823662689037894645226208582;
-  uint256 pplus = 21888242871839275222246405745257275088696311157297823662689037894645226208584;
+  uint256 ppluso4 = 21888242871839275222246405745257275088696311157297823662689037894645226208584/4;
 
   function hashToG1(uint[] b) internal returns (G1) {
-    uint x = 0;
+    uint i;
+    uint x;
+    uint y;
     while (true) {
-      uint256 hx = uint256(keccak256(b,byte(x)))%prime;
-      uint256 px = (modPow(hx,3,prime) + 3);
-      if (modPow(px, pminus/2, prime) == 1) {
-        uint256 py = modPow(px, pplus/4, prime);
-        if (uint(keccak256(b,byte(255)))%2 == 0)
-          return G1(hx,py);
+      x = uint256(keccak256(byte(i),b))%prime;
+      uint256 xq3 = (modPow(x, 3, prime) + 3);
+      y = modPow(xq3, ppluso4, prime);
+      if (modPow(y, 2, prime) == xq3) {
+        if (uint(keccak256(byte(255), b))%2 == 0)
+          return G1(x, y);
         else
-          return G1(hx,prime-py);
-      } else {
-        x++;
+          return G1(x, prime-y);
       }
+      i++;
     }
   }
 
